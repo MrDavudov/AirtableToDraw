@@ -18,6 +18,7 @@ func main() {
     client := airtable.NewClient(os.Getenv("API"))
 
     table := client.GetTable("appTh2xBTnix4oi1d", "Features")
+    fmt.Println(table)
 
     records, err := table.GetRecords().
 	FromView("Table view").
