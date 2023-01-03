@@ -25,5 +25,7 @@ func main() {
 		fmt.Println(file.Name())
 	}
 
-	Airtable()
+	// Airtable()
+	Decode("Задать срок холдирования метода оплаты.drawio.xml")
+	// object[name_ucd=""]
 }

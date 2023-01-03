@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -9,29 +8,35 @@ import (
 	"github.com/mehanizm/airtable"
 )
 
-func Airtable() {
+func Airtable() ([]interface{}, error) {
+	// получаем 
 	err := godotenv.Load("config.env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
+	// подключения airtable
 	client := airtable.NewClient(os.Getenv("API"))
 
+	// получаем таблицу
 	table := client.GetTable("appTh2xBTnix4oi1d", "Features")
-	fmt.Println(table)
 
+	// получаем данные из таблиц
 	records, err := table.GetRecords().
-		FromView("Table view").
-		ReturnFields("CODE", "Name").
+		FromView("Table view").	// название таблицы
+		ReturnFields("CODE", "Name"). // имена столбцов
 		InStringFormat("Europe/Moscow", "ru").
 		Do()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	fmt.Println("Best Public Domain Books: ")
-
+	// сохраняем данные
+	var obj []interface{}
 	for _, tableRecord := range records.Records {
-		fmt.Println(tableRecord.Fields["CODE"])
+		obj = append(obj, tableRecord.Fields["CODE"])
+		// fmt.Println(tableRecord.Fields["CODE"])
 	}
+
+	return obj, nil
 }
