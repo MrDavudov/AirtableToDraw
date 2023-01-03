@@ -1,79 +1,46 @@
 package main
 
 import (
-	"bytes"
-	"compress/flate"
-	"encoding/base64"
-	"encoding/xml"
 	"fmt"
-	"io/ioutil"
-	"net/url"
 
-	"log"
-	"os"
-	"github.com/joho/godotenv"
-	"github.com/mehanizm/airtable"
+	"github.com/studio-b12/gowebdav"
 )
 
 func main() {
-	// Airtable()
+	root := "https://cloud.05.ru"
+	username := "daudov.r"
+	password := "f41i4zvh"
+	path := "Marketplace"
 
-    Decode()
-}
-
-type MxFile struct {
-    XMLName xml.Name `xml:"mxfile"`
-	Diagram string	 `xml:"diagram"`
-}
-
-func Decode() {
-	b, _ := os.ReadFile("draw.drawio.xml")
-
-    var p MxFile
-    if err := xml.Unmarshal(b, &p); err != nil {
-        panic(err)
-    }
-
-	// decode base64
-	rawDecodedText, err := base64.StdEncoding.DecodeString(p.Diagram)
-	if err != nil {
-		panic(err)
-	}
-
-	// deflate
-	enflated, _ := ioutil.ReadAll(flate.NewReader(bytes.NewReader(rawDecodedText)))
+	// подключение
+	client := gowebdav.NewClient(root, username, password)
+	client.Connect()
 	
-	// url decode
-	query, err := url.QueryUnescape(string(enflated))
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(query)
-}
+	fmt.Println(client.Connect())
 
-func Airtable() {
-	err := godotenv.Load()
+	// создать папку
+	err := client.Mkdir("folder", 0644)
 	if err != nil {
-	  log.Fatal("Error loading .env file")
+		fmt.Println(err)
 	}
 
-    client := airtable.NewClient(os.Getenv("API"))
+	// зайти в папку Marketplace
+	files, err := client.ReadDir(path)
+	if err != nil {
+		fmt.Println(err)
+	}
 
-    table := client.GetTable("appTh2xBTnix4oi1d", "Features")
-    fmt.Println(table)
+	fmt.Println(files)
 
-    records, err := table.GetRecords().
-	FromView("Table view").
-	ReturnFields("CODE" ,"Name").
-	InStringFormat("Europe/Moscow", "ru").
-	Do()
-    if err != nil {
-        panic(err)
-    }
+	for _, file := range files {
+		//notice that [file] has os.FileInfo type
+		fmt.Println(file.Name())
+	}
 
-	fmt.Println("Best Public Domain Books: ")
-
-	for _, tableRecord := range records.Records {
-        fmt.Println(tableRecord.Fields["CODE"])
-    }
+	info, err := client.Stat(path)
+	if err != nil {
+		fmt.Println(err)
+	}
+	//notice that [info] has os.FileInfo type
+	fmt.Println(info)
 }
