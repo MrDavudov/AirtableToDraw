@@ -7,40 +7,23 @@ import (
 )
 
 func main() {
-	root := "https://cloud.05.ru"
+	root := "https://cloud.05.ru/remote.php/dav/files/16cd10dc-1afa-103d-80cb-4777a0293e48/"
 	username := "daudov.r"
 	password := "f41i4zvh"
 	path := "Marketplace"
 
 	// подключение
 	client := gowebdav.NewClient(root, username, password)
-	client.Connect()
-	
-	fmt.Println(client.Connect())
 
-	// создать папку
-	err := client.Mkdir("folder", 0644)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// зайти в папку Marketplace
+	// зайти в папку Marketplace и показать все файлы
 	files, err := client.ReadDir(path)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	fmt.Println(files)
-
 	for _, file := range files {
-		//notice that [file] has os.FileInfo type
 		fmt.Println(file.Name())
 	}
 
-	info, err := client.Stat(path)
-	if err != nil {
-		fmt.Println(err)
-	}
-	//notice that [info] has os.FileInfo type
-	fmt.Println(info)
+	Airtable()
 }
