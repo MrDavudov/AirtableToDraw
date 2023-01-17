@@ -7,11 +7,6 @@ import (
 )
 
 func (h *server) index(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		http.NotFound(w, r)
-		return
-	}
-
 	//Подключения шаблона
 	t, err := template.ParseFiles("templates/index.html", 
 									"templates/header.html", 

@@ -34,7 +34,7 @@ func (s *Server) Start(ctx context.Context) error {
 	clientAT := airtable.NewClient(os.Getenv("API"))
 
 	// Подключение к NextCloud
-	clientNC := gowebdav.NewClient(os.Getenv("root"), 
+	clientNC := gowebdav.NewClient(os.Getenv("host_url"), 
 									os.Getenv("username"), 
 									os.Getenv("password"))
 

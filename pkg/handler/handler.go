@@ -28,7 +28,8 @@ func (h *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *server) initRoutes() {
-	h.router.HandleFunc("/", h.index).Methods("GET")
+	fs := http.FileServer(http.Dir("./templates/assets/"))
+	h.router.Handle("/assets/", http.StripPrefix("/assets/", fs))
 
-	h.router.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/"))))
+	h.router.HandleFunc("/", h.index).Methods("GET")
 }

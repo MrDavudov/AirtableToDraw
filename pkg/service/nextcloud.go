@@ -37,13 +37,13 @@ func (s *NCService) Get() ([]string, error) {
 		fmt.Println(err)
 	}
 
-	var fileName []string
+	var FileName []string
 	for _, file := range files {
-		fileName = append(fileName, file.Name())
+		FileName = append(FileName, file.Name())
 		// fmt.Println(file.Name())
 	}
 
-	return fileName, nil
+	return FileName, nil
 }
 
 func Decode(file string) (string, error) {
